@@ -31,7 +31,14 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuTool">
+    <property name="title">
+     <string>Tool</string>
+    </property>
+    <addaction name="actionRenderImage"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuTool"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -239,6 +246,26 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionRenderImage">
+   <property name="text">
+    <string>Render Image</string>
+   </property>
+  </action>
+  <action name="actionDFT">
+   <property name="text">
+    <string>DFT</string>
+   </property>
+  </action>
+  <action name="actionGabor_Filter">
+   <property name="text">
+    <string>Gabor Filter</string>
+   </property>
+  </action>
+  <action name="actionIDFT">
+   <property name="text">
+    <string>IDFT</string>
    </property>
   </action>
  </widget>

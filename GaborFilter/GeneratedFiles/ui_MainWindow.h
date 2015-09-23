@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'MainWindow.ui'
 **
-** Created: Wed Sep 23 15:23:35 2015
+** Created: Wed Sep 23 16:41:13 2015
 **      by: Qt User Interface Compiler version 4.8.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -53,9 +53,14 @@ public:
     QAction *actionFindMatchingRule;
     QAction *actionClear3DModel;
     QAction *actionOpenCGA;
+    QAction *actionRenderImage;
+    QAction *actionDFT;
+    QAction *actionGabor_Filter;
+    QAction *actionIDFT;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menuFile;
+    QMenu *menuTool;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -127,6 +132,14 @@ public:
         actionClear3DModel->setObjectName(QString::fromUtf8("actionClear3DModel"));
         actionOpenCGA = new QAction(MainWindowClass);
         actionOpenCGA->setObjectName(QString::fromUtf8("actionOpenCGA"));
+        actionRenderImage = new QAction(MainWindowClass);
+        actionRenderImage->setObjectName(QString::fromUtf8("actionRenderImage"));
+        actionDFT = new QAction(MainWindowClass);
+        actionDFT->setObjectName(QString::fromUtf8("actionDFT"));
+        actionGabor_Filter = new QAction(MainWindowClass);
+        actionGabor_Filter->setObjectName(QString::fromUtf8("actionGabor_Filter"));
+        actionIDFT = new QAction(MainWindowClass);
+        actionIDFT->setObjectName(QString::fromUtf8("actionIDFT"));
         centralWidget = new QWidget(MainWindowClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         MainWindowClass->setCentralWidget(centralWidget);
@@ -135,6 +148,8 @@ public:
         menuBar->setGeometry(QRect(0, 0, 800, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
+        menuTool = new QMenu(menuBar);
+        menuTool->setObjectName(QString::fromUtf8("menuTool"));
         MainWindowClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindowClass);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -144,9 +159,11 @@ public:
         MainWindowClass->setStatusBar(statusBar);
 
         menuBar->addAction(menuFile->menuAction());
+        menuBar->addAction(menuTool->menuAction());
         menuFile->addAction(actionOpenCGA);
         menuFile->addSeparator();
         menuFile->addAction(actionExit);
+        menuTool->addAction(actionRenderImage);
 
         retranslateUi(MainWindowClass);
 
@@ -194,7 +211,12 @@ public:
         actionClear3DModel->setShortcut(QApplication::translate("MainWindowClass", "Ctrl+M", 0, QApplication::UnicodeUTF8));
         actionOpenCGA->setText(QApplication::translate("MainWindowClass", "Open CGA", 0, QApplication::UnicodeUTF8));
         actionOpenCGA->setShortcut(QApplication::translate("MainWindowClass", "Ctrl+O", 0, QApplication::UnicodeUTF8));
+        actionRenderImage->setText(QApplication::translate("MainWindowClass", "Render Image", 0, QApplication::UnicodeUTF8));
+        actionDFT->setText(QApplication::translate("MainWindowClass", "DFT", 0, QApplication::UnicodeUTF8));
+        actionGabor_Filter->setText(QApplication::translate("MainWindowClass", "Gabor Filter", 0, QApplication::UnicodeUTF8));
+        actionIDFT->setText(QApplication::translate("MainWindowClass", "IDFT", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindowClass", "&File", 0, QApplication::UnicodeUTF8));
+        menuTool->setTitle(QApplication::translate("MainWindowClass", "Tool", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

@@ -6,6 +6,7 @@
 #include "GLUtils.h"
 #include "Rectangle.h"
 #include "RuleParser.h"
+#include "CVUtils.h"
 
 GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers)) {
 	// 光源位置をセット
@@ -50,7 +51,7 @@ void GLWidget3D::mouseMoveEvent(QMouseEvent *e) {
  * This function is called once before the first call to paintGL() or resizeGL().
  */
 void GLWidget3D::initializeGL() {
-	renderManager.init("../shaders/vertex.glsl", "../shaders/geometry.glsl", "../shaders/fragment.glsl", 8192);
+	renderManager.init("../shaders/vertex.glsl", "../shaders/geometry.glsl", "../shaders/fragment.glsl", false);
 	showWireframe = true;
 	showScopeCoordinateSystem = false;
 
@@ -92,9 +93,9 @@ void GLWidget3D::paintGL() {
  */
 void GLWidget3D::drawScene(int drawMode) {
 	if (drawMode == 0) {
-		glUniform1i(glGetUniformLocation(renderManager.program, "shadowState"), 1);
+		glUniform1i(glGetUniformLocation(renderManager.program, "depthComputation"), 0);
 	} else {
-		glUniform1i(glGetUniformLocation(renderManager.program, "shadowState"), 2);
+		glUniform1i(glGetUniformLocation(renderManager.program, "depthComputation"), 1);
 	}
 	
 	if (showScopeCoordinateSystem) {
@@ -108,17 +109,68 @@ void GLWidget3D::loadCGA(const std::string& filename) {
 	renderManager.removeObjects();
 
 	cga::Rectangle* lot = new cga::Rectangle("Start", glm::rotate(glm::mat4(), -3.141592f * 0.5f, glm::vec3(1, 0, 0)), glm::mat4(), 10, 10, glm::vec3(1, 1, 1));
-	system.axiom = boost::shared_ptr<cga::Shape>(lot);
+	cga_system.axiom = boost::shared_ptr<cga::Shape>(lot);
 
 	try {
-		cga::parseRules(filename, system.ruleSet);
-		system.generate();
-		system.render(&renderManager, true);
+		cga::parseRules(filename, cga_system.ruleSet);
+		cga_system.derive();
+		cga_system.generateGeometry(&renderManager, true);
 	} catch (const char* ex) {
 		std::cout << "ERROR:" << std::endl << ex << std::endl;
 	}
 	
-	renderManager.updateShadowMap(this, light_dir, light_mvpMatrix);
-
 	updateGL();
+}
+
+void GLWidget3D::renderImage() {
+	glUniform1i(glGetUniformLocation(renderManager.program, "depthComputation"), 0);
+
+	renderManager.removeObjects();
+	try {
+		cga_system.derive();
+		cga_system.generateGeometry(&renderManager, true);
+	} catch (const char* ex) {
+		std::cout << "ERROR:" << std::endl << ex << std::endl;
+	}
+
+	camera.xrot = 90.0f;
+	camera.yrot = 0.0f;
+	camera.zrot = 0.0f;
+	camera.pos.z = 20.0f;
+
+	camera.updateMVPMatrix();
+
+
+
+	glClearColor(1, 1, 1, 0);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+
+	// Model view projection行列をシェーダに渡す
+	glUniformMatrix4fv(glGetUniformLocation(renderManager.program, "mvpMatrix"),  1, GL_FALSE, &camera.mvpMatrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(renderManager.program, "mvMatrix"),  1, GL_FALSE, &camera.mvMatrix[0][0]);
+
+	renderManager.render("shape", true);
+
+
+	unsigned char* data = new unsigned char[sizeof(unsigned char) * 3 * width() * height()];
+	glReadPixels(0, 0, width(), height(), GL_BGR, GL_UNSIGNED_BYTE, data);
+	cv::Mat img(height(), width(), CV_8UC3, data);
+	cv::flip(img, img, 0);
+	cv::imwrite("results/test1.jpg", img);
+
+	cv::cvtColor(img, img, CV_BGR2GRAY);
+	cv::imwrite("results/test2.jpg", img);
+	cv::threshold(img, img, 230, 255, 0);
+	cv::imwrite("results/test3.jpg", img);
+
+	cv::Rect roi = cvutils::computeBoundingBoxFromImage(img);
+	cv::Mat img2;
+	img(roi).copyTo(img2);
+	cv::imwrite("results/test4.jpg", img2);
+				
+	delete [] data;
+
+
 }

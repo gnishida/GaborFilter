@@ -32,21 +32,15 @@ public:
 	boost::shared_ptr<Shape> axiom;
 	std::list<boost::shared_ptr<Shape> > stack;
 	std::vector<boost::shared_ptr<Shape> > shapes;
-	std::vector<boost::shared_ptr<Shape> > proposedShapes;
 
 	RuleSet ruleSet;
-	RuleSet proposedRuleSet;
-
-	std::map<std::string, std::vector<RuleSet> > ruleRepository;
 
 public:
 	CGA();
 
 	void loadRules();
-	void acceptProposal();
-	void generate();
-	void generateProposal();
-	void render(RenderManager* renderManager, bool showScopeCoordinateSystem = false);
+	void derive();
+	void generateGeometry(RenderManager* renderManager, bool showScopeCoordinateSystem = false);
 
 };
 

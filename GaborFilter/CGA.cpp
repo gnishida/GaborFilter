@@ -10,43 +10,11 @@ namespace cga {
 CGA::CGA() {
 }
 
-void CGA::loadRules() {
-	// load floor rules
-	{
-		QDir dir("../cga/floors");
-		QStringList filters;
-		filters << "*.xml";
-		QFileInfoList fileInfoList = dir.entryInfoList(filters, QDir::Files|QDir::NoDotAndDotDot);
-		for (int i = 0; i < fileInfoList.size(); ++i) {
-			RuleSet ruleSet;
-			parseRules(fileInfoList[i].absoluteFilePath().toUtf8().constData(), ruleSet);
-
-			ruleRepository["floors"].push_back(ruleSet);
-		}
-	}
-
-	// load window rules
-	{
-		QDir dir("../cga/windows");
-		QStringList filters;
-		filters << "*.xml";
-		QFileInfoList fileInfoList = dir.entryInfoList(filters, QDir::Files|QDir::NoDotAndDotDot);
-		for (int i = 0; i < fileInfoList.size(); ++i) {
-			RuleSet ruleSet;
-			parseRules(fileInfoList[i].absoluteFilePath().toUtf8().constData(), ruleSet);
-
-			ruleRepository["windows"].push_back(ruleSet);
-		}
-	}
-}
-
-void CGA::acceptProposal() {
-	ruleSet = proposedRuleSet;
-	proposedShapes.clear();
-	generate();
-}
-
-void CGA::generate() {
+/**
+ * axiomからスタートし、ルールを適用してモデルを生成する。
+ * モデルは、terminalの集合である。この時点では、まだgeometryは生成されていない。
+ */
+void CGA::derive() {
 	shapes.clear();
 	stack.clear();
 	stack.push_back(axiom->clone(axiom->_name));
@@ -66,34 +34,17 @@ void CGA::generate() {
 	}
 }
 
-void CGA::generateProposal() {
-	proposedShapes.clear();
-	stack.clear();
-	stack.push_back(axiom->clone(axiom->_name));
-
-	while (!stack.empty()) {
-		boost::shared_ptr<Shape> shape = stack.front();
-		stack.pop_front();
-
-		if (proposedRuleSet.contain(shape->_name)) {
-			proposedRuleSet.getRule(shape->_name).apply(shape, proposedRuleSet, stack);
-		} else {
-			if (shape->_name.back() != '!' && shape->_name.back() != '.') {
-				//std::cout << "Warning: " << "no rule is found for " << shape->_name << "." << std::endl;
-			}
-			proposedShapes.push_back(shape);
-		}
-	}
-}
-
-void CGA::render(RenderManager* renderManager, bool showScopeCoordinateSystem) {
+/**
+ * 生成されたモデルに基づいて、geometryを生成する。
+ *
+ * @param renderManager		生成したgeometryを格納する。
+ * @param showScopeCoordinateSystem		Scopeの座標系のgeometryを生成する。
+ */
+void CGA::generateGeometry(RenderManager* renderManager, bool showScopeCoordinateSystem) {
 	renderManager->removeObject("shape");
 
 	for (int i = 0; i < shapes.size(); ++i) {
 		shapes[i]->render(renderManager, "shape", 1.0f, showScopeCoordinateSystem);
-	}
-	for (int i = 0; i < proposedShapes.size(); ++i) {
-		proposedShapes[i]->render(renderManager, "shape", 0.2f, showScopeCoordinateSystem);
 	}
 }
 

@@ -19,6 +19,7 @@ public:
 
 public slots:
 	void onOpenCGA();
+	void onRenderImage();
 };
 
 #endif // MAINWINDOW_H

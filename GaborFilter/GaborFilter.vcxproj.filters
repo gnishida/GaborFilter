@@ -119,17 +119,17 @@
     <ClCompile Include="ExtrudeOperator.cpp">
       <Filter>Source Files\rules</Filter>
     </ClCompile>
-    <ClCompile Include="InsertOperator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Asset.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneralObject.cpp">
       <Filter>Source Files\shapes</Filter>
     </ClCompile>
+    <ClCompile Include="Asset.cpp">
+      <Filter>Source Files\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="InsertOperator.cpp">
+      <Filter>Source Files\rules</Filter>
+    </ClCompile>
     <ClCompile Include="OBJLoader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\shapes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,30 +143,12 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="GLWidget3D.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_MainWindow.h">
       <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CVUtils.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowMapping.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="CompOperator.h">
       <Filter>Source Files\rules</Filter>
@@ -207,20 +189,38 @@
     <ClInclude Include="ExtrudeOperator.h">
       <Filter>Source Files\rules</Filter>
     </ClInclude>
-    <ClInclude Include="InsertOperator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Asset.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GLUtils.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="GeneralObject.h">
       <Filter>Source Files\shapes</Filter>
     </ClInclude>
+    <ClInclude Include="Asset.h">
+      <Filter>Source Files\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="InsertOperator.h">
+      <Filter>Source Files\rules</Filter>
+    </ClInclude>
     <ClInclude Include="OBJLoader.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMapping.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CVUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

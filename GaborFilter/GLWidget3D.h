@@ -18,6 +18,7 @@ public:
 
 	void drawScene(int drawMode);
 	void loadCGA(const std::string& filename);
+	void renderImage();
 
 protected:
 	void initializeGL();
@@ -36,6 +37,6 @@ public:
 	bool showWireframe;
 	bool showScopeCoordinateSystem;
 
-	cga::CGA system;
+	cga::CGA cga_system;
 };
 

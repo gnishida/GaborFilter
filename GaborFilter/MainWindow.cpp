@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags) : QMainWindow(parent, 
 	// メニューハンドラ
 	connect(ui.actionOpenCGA, SIGNAL(triggered()), this, SLOT(onOpenCGA()));
 	connect(ui.actionExit, SIGNAL(triggered()), this, SLOT(close()));
+	connect(ui.actionRenderImage, SIGNAL(triggered()), this, SLOT(onRenderImage()));
 
 	glWidget = new GLWidget3D(this);
 	setCentralWidget(glWidget);
@@ -20,4 +21,8 @@ void MainWindow::onOpenCGA() {
 	if (filename.isEmpty()) return;
 
 	glWidget->loadCGA(filename.toUtf8().data());
+}
+
+void MainWindow::onRenderImage() {
+	glWidget->renderImage();
 }

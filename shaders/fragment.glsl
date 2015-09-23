@@ -15,9 +15,9 @@ uniform int textureEnabled;	// 1 -- texture / 0 -- color only
 uniform sampler2D tex0;
 uniform int wireframeEnalbed; // 1 -- wireframe / 0 -- no wireframe
 
-//uniform int shadowState;	// 1 -- normal / 2 -- shadow
 uniform int depthComputation;  // 1 -- depth computation / 0 - otherwise
 uniform int lineRendering;     // 1 -- line rendering / 0 - otherwise
+uniform int useShadow;		// 1 -- use shadow / 0 - no shadow 
 uniform mat4 light_mvpMatrix;
 uniform vec3 lightDir;
 uniform sampler2D shadowMap;
@@ -67,9 +67,11 @@ void main()
 		vec4 ambient = vec4(0.6, 0.6, 0.6, 1.0);
 		vec4 diffuse = vec4(0.8, 0.8, 0.8, 1.0) * max(0.0, dot(-lightDir, fNormal));
 
-		float shadow_coef = 0.95;
-		shadow_coef= shadowCoef();
-		outputF = (ambient + (shadow_coef + 0.05) * diffuse) * outputF;
+		float shadow_coef = 1.0;
+		if (useShadow == 1) {
+			shadow_coef= shadowCoef();
+		}
+		outputF = (ambient + (shadow_coef * 0.95 + 0.05) * diffuse) * outputF;
 
 		if (wireframeEnalbed == 1) {
 			outputF = edgeIntensity * vec4(0.05, 0.05, 0.05, 1.0) + (1.0 - edgeIntensity) * outputF;
