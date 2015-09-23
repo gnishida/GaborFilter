@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<rules version="2015.9" author="gen">
+	<!-- Initial Shape starting rule -->
+	<rule name="Start">
+		<insert geometryPath="../cga/windows/rectangularFivePanesWindow.obj"/>
+	</rule>
+</rules>
