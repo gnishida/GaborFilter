@@ -173,4 +173,24 @@ void GLWidget3D::renderImage() {
 	delete [] data;
 
 
+
+
+	//////
+	// Gabor Filter
+	cv::Mat floatImg;
+	img2.convertTo(floatImg, CV_32F, 1.0f/255.0f, 0.0f);
+	cv::imwrite("results/test5.jpg", floatImg);
+
+	//cv::dft(floatImg, floatImg);
+	//cv::imwrite("results/test6.jpg", floatImg);
+
+	float sigma = floatImg.cols * 0.02f;
+	cv::Mat gaborKernel = cv::getGaborKernel(floatImg.size(), sigma, 0, 1.0f, 0.02f, 0.13, CV_32F);
+	cv::filter2D(img2, img2, CV_32F, gaborKernel);
+	cv::imwrite("results/test6.jpg", img2);
+
+
+	//cv::dft(floatImg, floatImg, cv::DFT_INVERSE);
+	//cv::imwrite("results/test7.jpg", floatImg);
+
 }
