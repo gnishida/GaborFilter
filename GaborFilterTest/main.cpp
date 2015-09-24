@@ -1,75 +1,41 @@
- #include <opencv2/core/core.hpp>
-    #include <opencv2/imgproc/imgproc.hpp>
-    #include <opencv2/highgui/highgui.hpp>
-    #include <math.h>
+﻿ #include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <math.h>
 
-    cv::Mat mkKernel(int ks, double sig, double th, double lm, double ps)
-    {
-        int hks = (ks-1)/2;
-        double theta = th*CV_PI/180;
-        double psi = ps*CV_PI/180;
-        double del = 2.0/(ks-1);
-        double lmbd = lm;
-        double sigma = sig/ks;
-        double x_theta;
-        double y_theta;
-        cv::Mat kernel(ks,ks, CV_32F);
-        for (int y=-hks; y<=hks; y++)
-        {
-            for (int x=-hks; x<=hks; x++)
-            {
-                x_theta = x*del*cos(theta)+y*del*sin(theta);
-                y_theta = -x*del*sin(theta)+y*del*cos(theta);
-                kernel.at<float>(hks+y,hks+x) = (float)exp(-0.5*(pow(x_theta,2)+pow(y_theta,2))/pow(sigma,2))* cos(2*CV_PI*x_theta/lmbd + psi);
-            }
-        }
-        return kernel;
-    }
+int main(int argc, char** argv) {
+	cv::Mat image = cv::imread("cat.jpg", 1);
+	cv::Mat src;
+	cv::cvtColor(image, src, CV_BGR2GRAY);
+	cv::Mat src_f;
+	//src.convertTo(src_f, CV_32F, 1.0/255, 0);
+	src.convertTo(src_f, CV_32F, 1.0, 0);	// 255で割ると、フィルタかけた後、再度255かけないと、画像保存しても真っ黒になる
 
-    int kernel_size=21;
-    int pos_sigma= 5;
-    int pos_lm = 50;
-    int pos_th = 0;
-    int pos_psi = 90;
-    cv::Mat src_f;
-    cv::Mat dest;
+	int kernel_size = 21;	// 結果に影響しないらしい。sigmaに対して十分大きいサイズなら、大丈夫と思う。
+	float sigma = 4.0f;//0.25f; // 大きくすると、ぼやける感じ。
+	float lmbd = 10.0f; // 波長 (1なら、kernel_sizeで1周期ということ)。ストローク線の太さにあわせるべき？
+	float gamma = 0.5f; // 波長のアスペクト比 (1じゃない方が、エッジを鋭く検出する感じ？)
+	float psi = 0.0f / 180.0f * 3.14159265f; // 位相オフセット (0で良いだろう)
 
-    void Process(int , void *)
-    {
-        double sig = pos_sigma;
-        double lm = 0.5+pos_lm/100.0;
-        double th = pos_th;
-        double ps = pos_psi;
-        cv::Mat kernel = mkKernel(kernel_size, sig, th, lm, ps);
-        cv::filter2D(src_f, dest, CV_32F, kernel);
-        cv::imshow("Process window", dest);
-        cv::Mat Lkernel(kernel_size*20, kernel_size*20, CV_32F);
-        cv::resize(kernel, Lkernel, Lkernel.size());
-        Lkernel /= 2.;
-        Lkernel += 0.5;
-        cv::imshow("Kernel", Lkernel);
-        cv::Mat mag;
+	for (int angle = 0; angle < 180; angle += 45) {
+		float theta = (float)angle / 180.0f * 3.14159265f;
+		
+		cv::Mat kernel = cv::getGaborKernel(cv::Size(kernel_size, kernel_size), sigma, theta, lmbd, gamma, psi, CV_32F);
+		kernel /= 1.0 * cv::sum(kernel)[0];
+		//kernel /= 1.5 * cv::sum(kernel)[0];
+
+		cv::Mat dest;
+		cv::filter2D(src_f, dest, CV_32F, kernel);
+
+		char filename1[256];
+		sprintf(filename1, "result1_%d.jpg", angle);
+		cv::imwrite(filename1, dest);
+
+		cv::Mat mag;
         cv::pow(dest, 2.0, mag);
-        cv::imshow("Mag", mag);
-    }
 
-    int main(int argc, char** argv)
-    {
-        cv::Mat image = cv::imread("cat.jpg",1);
-        cv::imshow("Src", image);
-        cv::Mat src;
-        cv::cvtColor(image, src, CV_BGR2GRAY);
-        src.convertTo(src_f, CV_32F, 1.0/255, 0);
-        if (!kernel_size%2)
-        {
-            kernel_size+=1;
-        }
-        cv::namedWindow("Process window", 1);
-        cv::createTrackbar("Sigma", "Process window", &pos_sigma, kernel_size, Process);
-        cv::createTrackbar("Lambda", "Process window", &pos_lm, 100, Process);
-        cv::createTrackbar("Theta", "Process window", &pos_th, 180, Process);
-        cv::createTrackbar("Psi", "Process window", &pos_psi, 360, Process);
-        Process(0,0);
-        cv::waitKey(0);
-        return 0;
-    }
+		char filename2[256];
+		sprintf(filename2, "result2_%d.jpg", angle);
+		cv::imwrite(filename2, mag);
+	}
+}
